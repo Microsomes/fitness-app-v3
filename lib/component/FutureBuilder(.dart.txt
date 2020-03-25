@@ -1,0 +1,18 @@
+FutureBuilder(
+            future:  MicrosomesDB().getTimerByName(widget.data['intervalName'].toString()),
+            builder: (context,snapshot){
+
+              if(snapshot.connectionState==ConnectionState.done){
+
+              
+              print(snapshot.data[0]['iconLink']);
+              return  CircleAvatar(
+              //  backgroundImage: NetworkImage(snapshot.data[0]['iconLink']),
+               backgroundColor: Colors.lightBlue,
+            );
+              }else{
+                return Text("something went wrong");
+              }
+            },
+                      
+          ),

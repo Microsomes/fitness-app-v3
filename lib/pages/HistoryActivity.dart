@@ -88,7 +88,7 @@ class HistoryActivtiyState extends State<HistoryActivity> {
                                               data: snapshot.data[index]);
                                         }),
                                   )
-                                : Text("No activity logged");
+                                : Text("No activity logged. If no data is shown after working out, please allow up to 10-15 workours before you can see the history.");
                           } else {
                             return Text("loading");
                           }

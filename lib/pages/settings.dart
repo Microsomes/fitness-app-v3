@@ -4,6 +4,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:fitnessbuddy/pages/ColorSchemeP.dart';
+import 'package:fitnessbuddy/pages/HistoryActivity.dart';
 
 
 class SettingsPage extends StatefulWidget {
@@ -184,6 +185,45 @@ class SettingsPageState extends State<SettingsPage> {
                       onPressed: () {
                         
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>EditColorScheme()) );
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Container(
+              height: 1,
+              width: MediaQuery.of(context).size.width * 0.5,
+              color: Colors.grey,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              padding: EdgeInsets.all(10),
+              child: Row(
+                children: <Widget>[
+                  Text(
+                    "Activity History",
+                    style: TextStyle(
+                        color: Color.fromRGBO(212, 212, 212, 1), fontSize: 20),
+                  ),
+                  SizedBox(
+                    width: 30,
+                  ),
+                  Expanded(
+                    child: MaterialButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      color: Colors.lightBlue,
+                      child: Text(
+                        "View",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                      onPressed: () {
+                        
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>HistoryActivity()) );
                       },
                     ),
                   )

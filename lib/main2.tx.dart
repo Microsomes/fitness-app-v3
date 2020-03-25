@@ -35,8 +35,6 @@ import 'package:fitnessbuddy/pages/Featurescomingsoon.dart';
 
 import 'helpers/dbhelp.dart';
 
-import 'package:fitnessbuddy/pages/tutorial/tuts.dart';
-
 void main() {
   runApp(MyApp());
 }
@@ -53,38 +51,9 @@ class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return FutureBuilder(
-      future: MicrosomesDB().isTutoralShown(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if(snapshot.data.length<=0){
-            //show preview
-            return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              home: TutorialScreen(),
-            );
-          }else{
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            home: HomePage(),
-          );
-          }
-        } else {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            home: Scaffold(
-              appBar: AppBar(
-                elevation: 0,
-                title: Text("loading"),
-                backgroundColor: Colors.white,
-              ),
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          );
-        }
-      },
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: HomePage(),
     );
   }
 }
@@ -136,7 +105,7 @@ class HomePageState extends State<HomePage> {
         });
       },
     ));
-    //allPages.add(HistoryActivity());
+    allPages.add(HistoryActivity());
     allPages.add(new AddTimer(
       oncancel: () {
         setState(() {
@@ -205,8 +174,9 @@ class HomePageState extends State<HomePage> {
         bottomNavigationBar: FancyBottomNavigation(
             tabs: [
               TabData(title: "Home", iconData: Icons.home),
+              TabData(title: "History", iconData: Icons.history),
               TabData(title: "Add Timer", iconData: Icons.add),
-              TabData(title: "Community", iconData: Icons.people),
+              TabData(title: "Calendar", iconData: Icons.calendar_today),
             ],
             onTabChangedListener: (pos) {
               setState(() {
@@ -757,7 +727,8 @@ class FirstPage extends StatelessWidget {
             height: 20,
           ),
           Container(
-            height: MediaQuery.of(context).size.height / 1.6,
+            height: 400,
+            color: Colors.red,
             child: Column(
               children: <Widget>[
                 Row(
@@ -791,137 +762,79 @@ class FirstPage extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                FutureBuilder(
-                  future: cb.getAllContent("fitnessPresets"),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      allPreTimers.removeRange(0, allPreTimers.length);
-                      print("all done");
-                      Map<String, dynamic> fp = jsonDecode(snapshot.data.body);
-                      var totalPresets = fp['total'];
-                      //determines the total amount of presets
+                Expanded(
+                  child: Container(
+                    child: Wrap(
+                      children: <Widget>[
+                        for (var i = 0; i < allPreTimers.length; i++)
+                          InkWell(
+                            onTap: () {
+                              MicrosomesDB()
+                                  .addHistoryActivity(allPreTimers[i].label)
+                                  .then((obi) {
+                                print("id insert $obi");
 
-                      fp['items'].forEach((item) {
-                        var label = item['fields']['label'];
-                        var duration = item['fields']['duration'];
-                        var worktime = item['fields']['workTime'];
-                        var resttime = item['fields']['restTime'];
-                        var helpcontent = item['fields']['helperContent'];
-                        var ishelp = item['fields']['isHelp'];
+                                DefaultColor df = new DefaultColor();
 
-                        var background = item['fields']['backgroundUrl']
-                            ['content'][0]['content'][1]['data']['uri'];
+                                getDefaultColorScheme().then((schemeID) {
+                                  if (schemeID.length <= 0) {
+                                    print("nothing selected default 0");
 
-                        print(background);
-
-                        print(label);
-
-                        Timers curT = new Timers(
-                          label: label,
-                          playCol: "n/a",
-                          totalWorkout: duration,
-                          totalWorkTime: worktime,
-                          totalRestTime: resttime,
-                        );
-                        curT.version = "2";
-                        //set the version to 2
-
-                        List<FitnessContent> fitnessCont =
-                            new List<FitnessContent>();
-                        //all fitness content will be stored here
-
-                        helpcontent['content'].forEach((content) {
-                          var val = content['content'][0];
-                          fitnessCont.add(FitnessContent(value: val));
-                        });
-
-                        curT.addBackgrondImage(background);
-                        //adds background image
-                        curT.addHelpContent(fitnessCont);
-
-                        curT.isHelpContent = true;
-
-                        allPreTimers.add(curT);
-                      });
-                    }
-
-                    return Expanded(
-                      child: Container(
-                        child: Wrap(
-                          children: <Widget>[
-                            for (var i = 0; i < allPreTimers.length; i++)
-                              InkWell(
-                                onTap: () {
-                                  MicrosomesDB()
-                                      .addHistoryActivity(allPreTimers[i].label)
-                                      .then((obi) {
-                                    print("id insert $obi");
-
-                                    DefaultColor df = new DefaultColor();
-
-                                    getDefaultColorScheme().then((schemeID) {
-                                      if (schemeID.length <= 0) {
-                                        print("nothing selected default 0");
-
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => PlayTime(
-                                                    curTim: allPreTimers[i],
-                                                    sessionID: obi,
-                                                    activeOne: df
-                                                        .getDefultScheme(0))));
-                                      } else {
-                                        var scid = schemeID[0]['schemeid'];
-                                        print("scheme id $scid");
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => PlayTime(
-                                                    curTim: allPreTimers[i],
-                                                    sessionID: obi,
-                                                    activeOne:
-                                                        df.getDefultScheme(
-                                                            scid))));
-                                      }
-                                    });
-                                  });
-                                },
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => PlayTime(
+                                                curTim: allPreTimers[i],
+                                                sessionID: obi,
+                                                activeOne:
+                                                    df.getDefultScheme(0))));
+                                  } else {
+                                    var scid = schemeID[0]['schemeid'];
+                                    print("scheme id $scid");
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => PlayTime(
+                                                curTim: allPreTimers[i],
+                                                sessionID: obi,
+                                                activeOne:
+                                                    df.getDefultScheme(scid))));
+                                  }
+                                });
+                              });
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(top: 20, left: 5),
+                              child: Container(
+                                alignment: Alignment.bottomCenter,
+                                padding: EdgeInsets.all(20),
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(2),
+                                  image: DecorationImage(
+                                      image: NetworkImage(
+                                          allPreTimers[i].backgroundImage)),
+                                ),
                                 child: Container(
-                                  margin: EdgeInsets.only(top: 20, left: 5),
-                                  child: Container(
-                                    alignment: Alignment.bottomCenter,
-                                    padding: EdgeInsets.all(20),
-                                    width: 100,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(2),
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              allPreTimers[i].backgroundImage)),
-                                    ),
-                                    child: Container(
-                                      padding: EdgeInsets.all(2),
-                                      decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          borderRadius:
-                                              BorderRadius.circular(20)),
-                                      child: Text(
-                                        allPreTimers[i].label,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
+                                  padding: EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Text(
+                                    allPreTimers[i].label,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
-                              )
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+                              ),
+                            ),
+                          )
+                      ],
+                    ),
+                  ),
                 )
               ],
             ),

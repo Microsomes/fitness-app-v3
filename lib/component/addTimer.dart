@@ -265,6 +265,7 @@ class AddTimerstate extends State<AddTimer> {
                       }
 
                       allTimers.add(new Timers(
+                        playCol: "n/a",
                           totalRestTime:
                               restDurationController.text, //amount of rest time
                           totalWorkout: totalDurationController
@@ -275,6 +276,7 @@ class AddTimerstate extends State<AddTimer> {
 
                       //need to add this to the database
                       Timers cur = new Timers(
+                        playCol: "n/a",
                           totalRestTime:
                               restDurationController.text, //amount of rest time
                           totalWorkout: totalDurationController

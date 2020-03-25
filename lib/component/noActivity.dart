@@ -13,7 +13,7 @@ class NoActivities extends StatelessWidget {
         ),
         Center(
             child: Text(
-          "No activies have been logged. Try creating a workout timer and working out!!!",
+          "No activities have been logged. Try creating a workout timer and working out!!!. Please wait up to 10 workouts before the history page shows anything. This is due to our machine learning algorithm.",
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Color.fromRGBO(222, 222, 222, 1),

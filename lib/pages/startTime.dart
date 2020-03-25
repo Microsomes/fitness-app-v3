@@ -107,7 +107,7 @@ class PlayTimeState extends State<PlayTime> {
   Color playButtonBG = Colors.white;
   //defines the background color of the play button
 
-  Color playButtonIconCol= Colors.black;
+  Color playButtonIconCol = Colors.black;
 
   @override
   void dispose() {
@@ -204,10 +204,8 @@ class PlayTimeState extends State<PlayTime> {
               restCircle = Colors.red;
               workCircleCol = Colors.green;
               backgroundColor = widget.activeOne.playBg;
-              appBarTextCol= widget.activeOne.appBarText_work;
-              statusText= widget.activeOne.statusTextCol_work;
-
-
+              appBarTextCol = widget.activeOne.appBarText_work;
+              statusText = widget.activeOne.statusTextCol_work;
             });
           }
         } else {
@@ -215,8 +213,8 @@ class PlayTimeState extends State<PlayTime> {
           Flame.audio.play("beep.wav");
 
           setState(() {
-            appBarTextCol= widget.activeOne.appBarText_rest;
-            statusText= widget.activeOne.statusTextCol_rest;
+            appBarTextCol = widget.activeOne.appBarText_rest;
+            statusText = widget.activeOne.statusTextCol_rest;
 
             backgroundColor = widget.activeOne.restBg;
             restCircle = Colors.red;
@@ -250,10 +248,11 @@ class PlayTimeState extends State<PlayTime> {
     appBarTextCol = widget.activeOne.appBarText;
     statusText = widget.activeOne.statusTextCol;
     playButtonBG = widget.activeOne.playButton;
-    playButtonIconCol= widget.activeOne.playButtonIcon;
+    playButtonIconCol = widget.activeOne.playButtonIcon;
 
     Flame.audio.play("beep.wav");
     //play intro sound
+    print("==" + widget.curTim.isHelpContent.toString());
   }
 
   @override
@@ -264,8 +263,14 @@ class PlayTimeState extends State<PlayTime> {
             ? FloatingActionButton(
                 backgroundColor: playButtonBG,
                 child: isStart == false
-                    ? Icon(Icons.play_arrow,color: playButtonIconCol,)
-                    : Icon(Icons.pause,color: playButtonIconCol,),
+                    ? Icon(
+                        Icons.play_arrow,
+                        color: playButtonIconCol,
+                      )
+                    : Icon(
+                        Icons.pause,
+                        color: playButtonIconCol,
+                      ),
                 onPressed: () {
                   if (isStart == false) {
                     startTimer();
@@ -285,189 +290,386 @@ class PlayTimeState extends State<PlayTime> {
           backgroundColor: backgroundColor,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: Icon(
+              Icons.arrow_back,
+              color: statusText,
+            ),
             onPressed: () {
               Navigator.pop(context);
             },
             color: Colors.black,
           ),
           title: Text(
-            widget.curTim.label,
+            widget.curTim.label +
+                "(" +
+                double.parse(totalTimeEslaped.toString()).toString() +
+                ")",
             style: TextStyle(color: appBarTextCol),
           ),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.help,
-                color: Colors.black,
-              ),
-              onPressed: () {},
-            )
+          actions: <Widget>[],
+        ),
+        body: widget.curTim.isHelpContent
+            ? PreferredSize(
+                preferredSize: new Size(100, 100),
+                child: DefaultTabController(
+                  length: 2,
+                  child: Scaffold(
+                    appBar: AppBar(
+                      elevation: 0,
+                      backgroundColor: backgroundColor,
+                      leading: Container(),
+                      bottom: TabBar(
+                        indicatorColor: Colors.lightBlue,
+                        tabs: <Widget>[
+                          Tab(
+                              icon: Icon(
+                            Icons.help,
+                            color: statusText,
+                          )),
+                          Tab(
+                              icon: Icon(
+                            Icons.play_arrow,
+                            color: statusText,
+                          )),
+                        ],
+                      ),
+                    ),
+                    body: TabBarView(
+                      children: <Widget>[
+                        SingleChildScrollView(
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                height: 100,
+                                width: MediaQuery.of(context).size.width,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Container(
+                                      alignment: Alignment.center,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text(
+                                            "Duration:",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          SizedBox(
+                                            width: 4,
+                                          ),
+                                          Container(
+                                            alignment: Alignment.bottomCenter,
+                                            height: 21,
+                                            child: Text(
+                                              widget.curTim.totalWorkout +
+                                                  " minutes",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Color.fromRGBO(
+                                                      222, 222, 222, 1)),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text(
+                                            "Work-Time:",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          SizedBox(
+                                            width: 4,
+                                          ),
+                                          Container(
+                                            alignment: Alignment.bottomCenter,
+                                            height: 21,
+                                            child: Text(
+                                              widget.curTim.totalWorkTime +
+                                                  " seconds",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Color.fromRGBO(
+                                                      222, 222, 222, 1)),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text(
+                                            "Rest-Time:",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          SizedBox(
+                                            width: 4,
+                                          ),
+                                          Container(
+                                            alignment: Alignment.bottomCenter,
+                                            height: 21,
+                                            child: Text(
+                                              widget.curTim.totalRestTime +
+                                                  " seconds",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Color.fromRGBO(
+                                                      222, 222, 222, 1)),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                color: Colors.white,
+                              ),
+                              for (var i = 0;
+                                  i < widget.curTim.helpContent.length;
+                                  i++)
+                                widget.curTim.helpContent[i].renderNow()
+                            ],
+                          ),
+                        ),
+                        PageOne(
+                            isCompleted: isCompleted,
+                            backgroundColor: backgroundColor,
+                            totalRunTimeStatus: totalRunTimeStatus,
+                            totalSecondCircleRunTime: totalSecondCircleRunTime,
+                            workCircleCol: workCircleCol,
+                            restCircle: restCircle,
+                            status: status,
+                            statusText: statusText,
+                            showTimer: showTimer,
+                            intervalCount: intervalCount,
+                            widget: widget),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            : PageOne(
+                isCompleted: isCompleted,
+                backgroundColor: backgroundColor,
+                totalRunTimeStatus: totalRunTimeStatus,
+                totalSecondCircleRunTime: totalSecondCircleRunTime,
+                workCircleCol: workCircleCol,
+                restCircle: restCircle,
+                status: status,
+                statusText: statusText,
+                showTimer: showTimer,
+                intervalCount: intervalCount,
+                widget: widget));
+  }
+}
+
+class PageOne extends StatelessWidget {
+  const PageOne({
+    Key key,
+    @required this.isCompleted,
+    @required this.backgroundColor,
+    @required this.totalRunTimeStatus,
+    @required this.totalSecondCircleRunTime,
+    @required this.workCircleCol,
+    @required this.restCircle,
+    @required this.status,
+    @required this.statusText,
+    @required this.showTimer,
+    @required this.intervalCount,
+    @required this.widget,
+  }) : super(key: key);
+
+  final bool isCompleted;
+  final Color backgroundColor;
+  final double totalRunTimeStatus;
+  final double totalSecondCircleRunTime;
+  final Color workCircleCol;
+  final Color restCircle;
+  final String status;
+  final Color statusText;
+  final bool showTimer;
+  final int intervalCount;
+  final PlayTime widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            isCompleted == false
+                ? Container(
+                    color: backgroundColor,
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          height: 320,
+                          width: MediaQuery.of(context).size.width,
+                          child: CustomPaint(
+                            painter: IntervalCircle(
+                                currentProgress: totalRunTimeStatus,
+                                currentProgress2: 100,
+                                currentProgress3: totalSecondCircleRunTime,
+                                circle1: Colors.green,
+                                circlr2: workCircleCol,
+                                circle3: restCircle),
+                          ),
+                        ),
+                        Text(
+                          "$status",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 40, color: statusText),
+                        ),
+                        Container(
+                          height: 300,
+                          color: Colors.white,
+                        ),
+                        showTimer == true
+                            ? AlertDialog(
+                                title: Text("Interval $intervalCount"),
+                                content: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      "Log any reps,sets or counts you did?",
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      "At every rest period you will get a chance to log your reps.",
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    Container(
+                                      height: 100,
+                                      child: TimerInput(
+                                        current: 0,
+                                        label: "",
+                                        onchange: (index) {
+                                          print("changed $index");
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            : Container()
+                      ],
+                    ))
+                : Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: Column(
+                      children: <Widget>[
+                        AlertDialog(
+                          title: Text("How are you feeling?"),
+                          content: Column(
+                            children: <Widget>[
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: <Widget>[
+                                    MaterialButton(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Text(
+                                        "Amazing",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      onPressed: () {},
+                                      color: Colors.lightBlue,
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    MaterialButton(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Text(
+                                        "Ok",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      onPressed: () {},
+                                      color: Colors.lightBlue,
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    MaterialButton(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Text(
+                                        "Exhaused",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      onPressed: () {},
+                                      color: Colors.lightBlue,
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        AlertDialog(
+                          title: Text("Well done"),
+                          content: Container(
+                            height: 150,
+                            child: FutureBuilder(
+                              future: widget.cf.getAllContent("fitnessQuotes"),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.done) {
+                                  print("loaded fitness quotes");
+
+                                  Map<String, dynamic> toConv =
+                                      jsonDecode(snapshot.data.body);
+                                  var totalResults = toConv['total'];
+
+                                  return ListView.builder(
+                                      itemCount: totalResults,
+                                      itemBuilder: (context, index) {
+                                        return Text(toConv['items'][index]
+                                                ['fields']['quote']
+                                            .toString());
+                                      });
+                                } else {
+                                  return Text("something went wrong sorry.");
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
           ],
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            child: Column(
-              children: <Widget>[
-                isCompleted == false
-                    ? Container(
-                        color: backgroundColor,
-                        width: MediaQuery.of(context).size.width,
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              height: 400,
-                              width: MediaQuery.of(context).size.width,
-                              child: CustomPaint(
-                                painter: IntervalCircle(
-                                    currentProgress: totalRunTimeStatus,
-                                    currentProgress2: 100,
-                                    currentProgress3: totalSecondCircleRunTime,
-                                    circle1: Colors.green,
-                                    circlr2: workCircleCol,
-                                    circle3: restCircle),
-                              ),
-                            ),
-                            Text(
-                              "$status",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 60, color: statusText),
-                            ),
-                            Container(
-                              height: 100,
-                            ),
-                            showTimer == true
-                                ? AlertDialog(
-                                    title: Text("Interval $intervalCount"),
-                                    content: Column(
-                                      children: <Widget>[
-                                        Text(
-                                          "Log any reps,sets or counts you did?",
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          "At every rest period you will get a chance to log your reps.",
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        Container(
-                                          height: 100,
-                                          child: TimerInput(
-                                            current: 0,
-                                            label: "",
-                                            onchange: (index) {
-                                              print("changed $index");
-                                            },
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                : Container()
-                          ],
-                        ))
-                    : Container(
-                        height: MediaQuery.of(context).size.height,
-                        child: Column(
-                          children: <Widget>[
-                            AlertDialog(
-                              title: Text("How are you feeling?"),
-                              content: Column(
-                                children: <Widget>[
-                                  SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      children: <Widget>[
-                                        MaterialButton(
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                          child: Text(
-                                            "Amazing",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          onPressed: () {},
-                                          color: Colors.lightBlue,
-                                        ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        MaterialButton(
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                          child: Text(
-                                            "Ok",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          onPressed: () {},
-                                          color: Colors.lightBlue,
-                                        ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        MaterialButton(
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                          child: Text(
-                                            "Exhaused",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          onPressed: () {},
-                                          color: Colors.lightBlue,
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            AlertDialog(
-                              title: Text("Well done"),
-                              content: Container(
-                                height: 150,
-                                child: FutureBuilder(
-                                  future:
-                                      widget.cf.getAllContent("fitnessQuotes"),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.done) {
-                                      print("loaded fitness quotes");
-
-                                      Map<String, dynamic> toConv =
-                                          jsonDecode(snapshot.data.body);
-                                      var totalResults = toConv['total'];
-
-                                      return ListView.builder(
-                                          itemCount: totalResults,
-                                          itemBuilder: (context, index) {
-                                            return Text(toConv['items'][index]
-                                                    ['fields']['quote']
-                                                .toString());
-                                          });
-                                    } else {
-                                      return Text(
-                                          "something went wrong sorry.");
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-              ],
-            ),
-          ),
-        ));
+      ),
+    );
   }
 }

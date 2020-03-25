@@ -6,6 +6,18 @@ class MicrosomesDB {
   //set all database tables
   MicrosomesDB() {
     openDatabase("microsomes6.db", version: 3,
+    onCreate: (Database db,int version)async{
+       await db.execute(
+          'CREATE TABLE IF NOT EXISTS  timers (id INTEGER PRIMARY KEY AUTOINCREMENT, totalWorkout TEXT, totalWorkTime TEXT, totalRestTime TEXT, label TEXT, playcolor TEXT, createdAt DATETIME DEFAULT CURRENT_TIMESTAMP, iconLink TEXT)');
+      //create timers
+      await db.execute(
+          'CREATE TABLE IF NOT EXISTS  activityhistory (id INTEGER PRIMARY KEY AUTOINCREMENT, intervalName TEXT, createdAt DATETIME DEFAULT CURRENT_TIMESTAMP, duration TEXT)');
+      //create activity history
+
+      await db.execute(
+          'CREATE TABLE IF NOT EXISTS  activityhistoryInterval (id INTEGER PRIMARY KEY AUTOINCREMENT , activityhistoryid INTEGER , totalReps TEXT , feelings TEXT ,createdAt DATETIME DEFAULT CURRENT_TIMESTAMP, duration TEXT)');
+
+    },
         onUpgrade: (Database db, int oldVersion, int newVersion) async {
       //upgrade code goes here
       print("upgrading now");
@@ -15,7 +27,19 @@ class MicrosomesDB {
     }).then((db) {
       db.execute(
           'CREATE TABLE IF NOT EXISTS defaultColorScheme (id INTEGER PRIMARY KEY AUTOINCREMENT, schemeid INTEGER)');
+          db.execute(
+          'CREATE TABLE IF NOT EXISTS configs (id INTEGER PRIMARY KEY AUTOINCREMENT, isTutorial INTEGER)');
+          //creates the config
+
     });
+  }
+
+  //return true if tutorial is shown
+  Future isTutoralShown() async {
+      Database db = await openDatabase("microsomes6.db", version: 3);
+      //opens database
+    List<Map> configs= await  db.rawQuery("SELECT * FROM configs");
+    return configs;
   }
 
   //sets up all the database tables and grabs the timers
@@ -116,6 +140,10 @@ class MicrosomesDB {
 
   Future getActivtyPage(int page) async {
     double offset = page * 10.0;
+    print("get page $page");
+    if(page==1){
+      offset=0;
+    }
     print("offset $offset");
     print("pages $page");
     Database db = await openDatabase("microsomes6.db", version: 1);

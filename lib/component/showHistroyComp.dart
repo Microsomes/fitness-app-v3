@@ -38,6 +38,10 @@ class ShowHistoryComp_State extends State<ShowHistoryComp> {
     super.initState();
     print(widget.data);
       MicrosomesDB().getTimerByName(widget.data['intervalName'].toString()).then((timerdata){
+        print(timerdata);
+        if(timerdata.length<=0){
+          print("nothing");
+        }
      });
   }
 
@@ -53,12 +57,19 @@ class ShowHistoryComp_State extends State<ShowHistoryComp> {
 
               if(snapshot.connectionState==ConnectionState.done){
 
-              
-              print(snapshot.data[0]['iconLink']);
-              return  CircleAvatar(
-                backgroundImage: NetworkImage(snapshot.data[0]['iconLink']),
+                if(snapshot.data.length<=0){
+                  return Text("n/a");
+                }else{
+                  print(snapshot.data[0]['iconLink']);
+                  return CircleAvatar(
+              // backgroundImage: NetworkImage(snapshot.data[0]['iconLink']),
                backgroundColor: Colors.lightBlue,
             );
+                }
+
+              
+         
+              
               }else{
                 return Text("something went wrong");
               }
